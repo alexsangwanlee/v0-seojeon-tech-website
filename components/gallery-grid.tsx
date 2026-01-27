@@ -13,8 +13,7 @@ interface Project {
   project_date?: string // 하위 호환성을 위해 유지
   image_url: string
   description: string | null
-  images?: string[]
-  location?: string
+  location?: string | null
 }
 
 export function GalleryGrid({ projects }: { projects: Project[] }) {
@@ -29,7 +28,6 @@ export function GalleryGrid({ projects }: { projects: Project[] }) {
   }, [searchParams])
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [currentProject, setCurrentProject] = useState<Project | null>(null)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   const categories = ['all', 'curtains', 'awnings', 'stage', 'folding-doors']
   const categoryLabels: Record<string, string> = {
@@ -44,9 +42,8 @@ export function GalleryGrid({ projects }: { projects: Project[] }) {
     ? projects 
     : projects.filter(p => p.category === selectedCategory)
 
-  const openLightbox = (project: Project, imageIndex = 0) => {
+  const openLightbox = (project: Project) => {
     setCurrentProject(project)
-    setCurrentImageIndex(imageIndex)
     setLightboxOpen(true)
     document.body.style.overflow = 'hidden'
   }
@@ -57,17 +54,6 @@ export function GalleryGrid({ projects }: { projects: Project[] }) {
     document.body.style.overflow = 'unset'
   }
 
-  const prevImage = () => {
-    if (currentProject && currentImageIndex > 0) {
-      setCurrentImageIndex(currentImageIndex - 1)
-    }
-  }
-
-  const nextImage = () => {
-    if (currentProject && currentImageIndex < currentProject.images.length - 1) {
-      setCurrentImageIndex(currentImageIndex + 1)
-    }
-  }
 
   const prevProject = () => {
     if (!currentProject) return

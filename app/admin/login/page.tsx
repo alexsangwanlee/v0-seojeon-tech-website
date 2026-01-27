@@ -4,6 +4,7 @@ import React from "react"
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -16,34 +17,37 @@ export default function AdminLoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const supabase = createClient()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
 
-    // 임시 로그인 (Supabase 연결 전까지)
-    // 실제 운영시에는 Supabase 인증으로 변경 필요
-    
-    // 등록된 관리자 계정 목록
-    const validAdmin = { email: 'admin@seojeontech.com', password: 'admin123' }
-    
-    if (email !== validAdmin.email) {
-      setError('존재하지 않는 이메일입니다.')
+    try {
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (authError) {
+        if (authError.message === 'Invalid login credentials') {
+          setError('이메일 또는 비밀번호가 올바르지 않습니다.')
+        } else {
+          setError(authError.message)
+        }
+        setLoading(false)
+        return
+      }
+
+      if (data.user) {
+        router.push('/admin/dashboard')
+      }
+    } catch (err) {
+      setError('로그인 중 오류가 발생했습니다.')
+    } finally {
       setLoading(false)
-      return
     }
-    
-    if (password !== validAdmin.password) {
-      setError('비밀번호가 올바르지 않습니다.')
-      setLoading(false)
-      return
-    }
-    
-    // 로그인 성공
-    localStorage.setItem('isAdmin', 'true')
-    router.push('/admin/dashboard')
-    setLoading(false)
   }
 
   return (

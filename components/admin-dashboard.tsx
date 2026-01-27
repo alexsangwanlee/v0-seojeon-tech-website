@@ -41,7 +41,13 @@ type Inquiry = {
   status?: string
 }
 
-export function AdminDashboard({ projects, inquiries }: { projects: Project[], inquiries: Inquiry[] }) {
+type AdminDashboardProps = {
+  projects: Project[]
+  inquiries: Inquiry[]
+  onLogout?: () => void
+}
+
+export function AdminDashboard({ projects, inquiries, onLogout }: AdminDashboardProps) {
   const [localProjects, setLocalProjects] = useState(projects)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingProject, setEditingProject] = useState<Project | null>(null)
@@ -62,8 +68,11 @@ export function AdminDashboard({ projects, inquiries }: { projects: Project[], i
   })
 
   const handleLogout = () => {
-    localStorage.removeItem('isAdmin')
-    router.push('/admin/login')
+    if (onLogout) {
+      onLogout()
+    } else {
+      router.push('/admin/login')
+    }
   }
 
   const processImageFile = async (file: File) => {

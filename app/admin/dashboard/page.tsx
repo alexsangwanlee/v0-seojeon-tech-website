@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { AdminDashboard } from '@/components/admin-dashboard'
 import { Loader2 } from 'lucide-react'
@@ -29,13 +30,26 @@ export default function AdminDashboardPage() {
   const [projects, setProjects] = useState<Project[]>([])
   const [inquiries, setInquiries] = useState<Inquiry[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [error, setError] = useState('')
+  const router = useRouter()
 
   const supabase = createClient()
 
   useEffect(() => {
-    async function fetchData() {
+    async function checkAuthAndFetchData() {
       setIsLoading(true)
+      
+      // 인증 확인
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (!user) {
+        router.push('/admin/login')
+        return
+      }
+      
+      setIsAuthenticated(true)
+      
       try {
         const [projectsRes, inquiriesRes] = await Promise.all([
           supabase
@@ -61,10 +75,15 @@ export default function AdminDashboardPage() {
       }
     }
 
-    fetchData()
-  }, [])
+    checkAuthAndFetchData()
+  }, [router])
 
-  if (isLoading) {
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    router.push('/admin/login')
+  }
+
+  if (isLoading || !isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin mr-2" />
@@ -89,5 +108,5 @@ export default function AdminDashboardPage() {
     )
   }
 
-  return <AdminDashboard projects={projects} inquiries={inquiries} />
+  return <AdminDashboard projects={projects} inquiries={inquiries} onLogout={handleLogout} />
 }

@@ -59,7 +59,7 @@ export default function AwningsPage() {
     },
     {
       question: '어닝 원단의 수명은 얼마나 되나요?',
-      answer: 'Dickson(10년 보증), Recasens(5년 보증), Letom(3년 보증) 원단 브랜드에 따라 다르며, 일반적으로 7~10년 사용 가능합니다. 원단만 교체도 가능하여 경제적입니다.'
+      answer: 'Dickson(제조사 10년 색상 보증), Recasens(제조사 5년 색상 보증), Letom(제조사 3년 품질 보증) 원단 브랜드에 따라 다르며, 일반적으로 7~10년 사용 가능합니다. 서전텍 서비스 보증은 1년이며, 원단만 교체도 가능하여 경제적입니다.'
     },
     {
       question: '후에 전동으로 변경할 수 있나요?',
@@ -165,7 +165,7 @@ export default function AwningsPage() {
                   </div>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li>• 최고급 아크릴 원단</li>
-                    <li>• 10년 색상 보증</li>
+                    <li>• 제조사 10년 색상 보증</li>
                     <li>• UV 차단율 99%</li>
                     <li>• 300여 가지 컬러/패턴</li>
                     <li>• 프리미엄 선택</li>
@@ -179,7 +179,7 @@ export default function AwningsPage() {
                   </div>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li>• 고급 아크릴 원단</li>
-                    <li>• 5년 색상 보증</li>
+                    <li>• 제조사 5년 색상 보증</li>
                     <li>• UV 차단율 98%</li>
                     <li>• 다양한 디자인 옵션</li>
                     <li>• 가성비 우수</li>
@@ -193,7 +193,7 @@ export default function AwningsPage() {
                   </div>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li>• 실용적 아크릴 원단</li>
-                    <li>• 3년 품질 보증</li>
+                    <li>• 제조사 3년 품질 보증</li>
                     <li>• UV 차단율 95%</li>
                     <li>• 기본 색상 선택</li>
                     <li>• 경제적 선택</li>
@@ -236,7 +236,7 @@ export default function AwningsPage() {
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
-                      <span className="text-sm"><strong>보증:</strong> 5년 무상 A/S</span>
+                      <span className="text-sm"><strong>보증:</strong> 제조사 5년 보증, 서전텍 1년 서비스 보증</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
@@ -271,7 +271,7 @@ export default function AwningsPage() {
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="w-1.5 h-1.5 bg-foreground rounded-full mt-2 flex-shrink-0" />
-                      <span className="text-sm"><strong>보증:</strong> 2년 품질 보증</span>
+                      <span className="text-sm"><strong>보증:</strong> 제조사 2년 보증, 서전텍 1년 서비스 보증</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="w-1.5 h-1.5 bg-foreground rounded-full mt-2 flex-shrink-0" />

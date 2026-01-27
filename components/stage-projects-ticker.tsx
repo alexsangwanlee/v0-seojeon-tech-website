@@ -30,38 +30,49 @@ export function StageProjectsTicker() {
     fetchProjects()
   }, [])
 
-  // Duplicate the projects array to create seamless loop
-  const duplicatedProjects = [...projects, ...projects]
+  // Show first 6 projects, duplicate for seamless loop effect
+  const displayProjects = projects.slice(0, 6)
+  const duplicatedProjects = [...displayProjects, ...displayProjects]
 
-  const tickerItems = duplicatedProjects.map((project) => `${project.facility_name} (${project.location})`).join(' · ')
+  if (projects.length === 0) {
+    return null
+  }
 
   return (
-    <section className="py-16 bg-muted/40 overflow-hidden border-y">
-      <div className="mb-8 text-center">
-        <h3 className="text-2xl lg:text-3xl font-bold text-foreground mb-2">
-          주요 시공 실적
-        </h3>
-        <p className="text-muted-foreground">
-          전국 주요 공연장과 문화시설
-        </p>
-      </div>
+    <section className="py-20 lg:py-24 bg-gradient-to-b from-background via-muted/20 to-background overflow-hidden">
+      <div className="container mx-auto px-4 lg:px-8">
+        <div className="mb-12 text-center">
+          <h3 className="text-3xl lg:text-4xl font-bold text-foreground mb-3">
+            주요 시공 실적
+          </h3>
+          <p className="text-muted-foreground text-lg">
+            전국 주요 공연장과 문화시설
+          </p>
+        </div>
 
-      <div className="relative">
-        {/* Gradient overlays for fade effect */}
-        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-muted/40 to-transparent z-10" />
-        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-muted/40 to-transparent z-10" />
-        
-        {/* Scrolling content */}
-        <div className="flex gap-8 animate-scroll">
-          {duplicatedProjects.map((project, index) => (
-            <div
-              key={`${project.id}-${index}`}
-              className="flex-shrink-0 text-foreground/70 text-lg font-medium whitespace-nowrap hover:text-foreground transition-colors"
-            >
-              <span className="font-semibold text-foreground">{project.facility_name}</span>
-              <span className="text-foreground/50 ml-2">({project.location})</span>
-            </div>
-          ))}
+        <div className="relative">
+          {/* Gradient overlays for seamless loop effect */}
+          <div className="absolute left-0 top-0 bottom-0 w-24 lg:w-32 bg-gradient-to-r from-background via-background to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-24 lg:w-32 bg-gradient-to-l from-background via-background to-transparent z-10 pointer-events-none" />
+          
+          {/* Scrolling content - 6 items per view */}
+          <div className="flex gap-4 lg:gap-6 animate-scroll">
+            {duplicatedProjects.map((project, index) => (
+              <div
+                key={`${project.id}-${index}`}
+                className="flex-shrink-0 bg-card border border-border/50 rounded-lg px-6 py-4 lg:px-8 lg:py-5 hover:border-primary/50 hover:shadow-lg transition-all duration-300 min-w-[200px] lg:min-w-[240px]"
+              >
+                <div className="flex flex-col">
+                  <span className="font-bold text-foreground text-base lg:text-lg mb-1">
+                    {project.facility_name}
+                  </span>
+                  <span className="text-muted-foreground text-sm lg:text-base">
+                    {project.location}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -76,7 +87,7 @@ export function StageProjectsTicker() {
         }
 
         .animate-scroll {
-          animation: scroll 50s linear infinite;
+          animation: scroll 30s linear infinite;
         }
 
         .animate-scroll:hover {

@@ -62,6 +62,7 @@ export function AdminDashboard({ projects, inquiries, onLogout }: AdminDashboard
     title: '',
     category: 'curtains',
     completion_date: new Date().toISOString().split('T')[0],
+    completion_year: new Date().getFullYear().toString(),
     image_url: '',
     description: '',
     location: '',
@@ -169,15 +170,18 @@ export function AdminDashboard({ projects, inquiries, onLogout }: AdminDashboard
     setSaving(true)
 
     try {
-      // 날짜 유효성 검증
-      if (!formData.completion_date) {
-        throw new Error('시공 완료일을 입력해주세요.')
+      // 년도 유효성 검증
+      if (!formData.completion_year || !formData.completion_year.trim()) {
+        throw new Error('시공 완료년도를 입력해주세요.')
       }
 
-      const dateObj = new Date(formData.completion_date)
-      if (isNaN(dateObj.getTime())) {
-        throw new Error('올바른 날짜 형식이 아닙니다.')
+      const year = parseInt(formData.completion_year)
+      if (isNaN(year) || year < 2000 || year > new Date().getFullYear() + 1) {
+        throw new Error('올바른 년도를 입력해주세요. (2000년 ~ 현재년도)')
       }
+
+      // completion_date를 년도에서 생성 (YYYY-01-01 형식)
+      const completionDate = `${year}-01-01`
 
       // 이미지 URL 검증
       if (!formData.image_url) {
@@ -187,7 +191,7 @@ export function AdminDashboard({ projects, inquiries, onLogout }: AdminDashboard
       const updateData = {
         title: formData.title,
         category: formData.category,
-        completion_date: formData.completion_date,
+        completion_date: completionDate,
         image_url: formData.image_url,
         description: formData.description || null,
         location: formData.location || null,
@@ -257,25 +261,24 @@ export function AdminDashboard({ projects, inquiries, onLogout }: AdminDashboard
   const openEditDialog = (project: Project) => {
     setEditingProject(project)
     
-    // 날짜 형식 정규화 (YYYY-MM-DD)
-    let formattedDate = project.completion_date
-    if (formattedDate) {
+    // completion_date에서 년도 추출
+    let year = new Date().getFullYear().toString()
+    if (project.completion_date) {
       try {
-        const dateObj = new Date(formattedDate)
+        const dateObj = new Date(project.completion_date)
         if (!isNaN(dateObj.getTime())) {
-          formattedDate = dateObj.toISOString().split('T')[0]
+          year = dateObj.getFullYear().toString()
         }
       } catch {
-        // 날짜 파싱 실패 시 원본 유지
+        // 날짜 파싱 실패 시 현재 년도 사용
       }
-    } else {
-      formattedDate = new Date().toISOString().split('T')[0]
     }
     
     setFormData({
       title: project.title,
       category: project.category,
-      completion_date: formattedDate,
+      completion_date: project.completion_date || `${year}-01-01`,
+      completion_year: year,
       image_url: project.image_url,
       description: project.description || '',
       location: project.location || '',
@@ -328,6 +331,7 @@ export function AdminDashboard({ projects, inquiries, onLogout }: AdminDashboard
                       title: '',
                       category: 'curtains',
                       completion_date: new Date().toISOString().split('T')[0],
+                      completion_year: new Date().getFullYear().toString(),
                       image_url: '',
                       description: '',
                       location: '',
@@ -369,14 +373,27 @@ export function AdminDashboard({ projects, inquiries, onLogout }: AdminDashboard
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="completion_date">시공 완료일</Label>
+                      <Label htmlFor="completion_year">시공 완료년도</Label>
                       <Input
-                        id="completion_date"
-                        type="date"
-                        value={formData.completion_date}
-                        onChange={(e) => setFormData({ ...formData, completion_date: e.target.value })}
+                        id="completion_year"
+                        type="number"
+                        min="2000"
+                        max={new Date().getFullYear() + 1}
+                        value={formData.completion_year}
+                        onChange={(e) => {
+                          const year = e.target.value
+                          setFormData({ 
+                            ...formData, 
+                            completion_year: year,
+                            completion_date: year ? `${year}-01-01` : ''
+                          })
+                        }}
+                        placeholder="예: 2024"
                         required
                       />
+                      <p className="text-xs text-muted-foreground">
+                        시공이 완료된 년도를 입력해주세요
+                      </p>
                     </div>
 
                     <div className="space-y-2">

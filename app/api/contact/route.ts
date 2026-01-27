@@ -38,7 +38,7 @@ export async function POST(request: Request) {
 
     // 이메일 발송 (노션 스타일)
     const { data, error } = await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: '서전텍 문의 <noreply@seojeontec.com>',
       to: 'sj6363@hanmail.net',
       subject: `📬 새 문의 | ${name}`,
       html: `

@@ -2,7 +2,7 @@ import React from "react"
 import type { Metadata } from 'next'
 import { Noto_Sans_KR, Noto_Serif_KR } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
-import { StructuredData } from '@/components/structured-data'
+import { StructuredData, OrganizationSchema } from '@/components/structured-data'
 import './globals.css'
 
 const notoSansKR = Noto_Sans_KR({ 
@@ -16,8 +16,6 @@ const notoSerifKR = Noto_Serif_KR({
   weight: ['400', '700'],
   variable: '--font-serif',
 });
-
-const prelude = { variable: '--font-prelude' }; // Declare the prelude variable
 
 export const metadata: Metadata = {
   title: '서전텍 | 프리미엄 쉐이드 솔루션 - 커튼, 블라인드, 어닝, 무대막',
@@ -61,8 +59,14 @@ export const metadata: Metadata = {
   },
   generator: 'Next.js',
   icons: {
-    icon: '/favicon.ico',
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/icon-dark-32x32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/icon-light-32x32.png', type: 'image/png', sizes: '32x32' },
+    ],
     apple: '/apple-icon.png',
+    shortcut: '/favicon.ico',
   },
   applicationName: 'Seojeon Tech',
   appleWebApp: {
@@ -81,9 +85,13 @@ export default function RootLayout({
     <html lang="ko">
       <head>
         <meta name="format-detection" content="telephone=yes" />
-        <meta name="naver-site-verification" content="naver" />
-        <meta name="google-site-verification" content="google" />
+        <meta name="geo.region" content="KR-44" />
+        <meta name="geo.placename" content="논산시, 충청남도" />
+        <meta name="geo.position" content="36.1869;127.0987" />
+        <meta name="ICBM" content="36.1869, 127.0987" />
+        <meta name="naver-site-verification" content="b85726438b390c8436eb9902634d6869c584a4c0" />
         <StructuredData />
+        <OrganizationSchema />
       </head>
       <body className={`${notoSansKR.variable} ${notoSerifKR.variable} font-sans antialiased`}>
         {children}

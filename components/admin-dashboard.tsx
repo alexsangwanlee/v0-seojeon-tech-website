@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Plus, Trash2, Edit, LogOut, ImageIcon, Users, Loader2 } from 'lucide-react'
+import { Plus, Trash2, Edit, LogOut, ImageIcon, Users, Loader2, Award } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import Link from 'next/link'
 
@@ -299,11 +299,17 @@ export function AdminDashboard({ projects, inquiries, onLogout }: AdminDashboard
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-6">
+        <div className="mb-6 flex gap-3 flex-wrap">
           <Link href="/admin/clients">
             <Button variant="outline" size="lg" className="w-full md:w-auto bg-transparent">
               <Users className="w-4 h-4 mr-2" />
               고객사 관리
+            </Button>
+          </Link>
+          <Link href="/admin/stage-projects">
+            <Button variant="outline" size="lg" className="w-full md:w-auto bg-transparent">
+              <Award className="w-4 h-4 mr-2" />
+              무대막 시공 실적 관리
             </Button>
           </Link>
         </div>

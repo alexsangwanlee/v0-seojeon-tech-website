@@ -1,14 +1,7 @@
 'use client'
 
-import React from "react"
-
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { CheckCircle2 } from 'lucide-react'
 
 export function ContactForm() {
@@ -71,77 +64,112 @@ export function ContactForm() {
   }
 
   return (
-    <div className="bg-card border p-8 lg:p-10">
-      <h2 className="font-serif text-3xl font-bold mb-8">문의하기</h2>
-
+    <div>
       {success && (
-        <Alert className="mb-6 bg-green-50 border-green-200">
-          <CheckCircle2 className="h-4 w-4 text-green-600" />
-          <AlertDescription className="text-green-800">
-            문의가 성공적으로 접수되었습니다. 빠른 시일 내에 연락드리겠습니다.
-          </AlertDescription>
-        </Alert>
+        <div className="mb-6 bg-[#dbeddb] border border-[#c3e6c3] rounded-lg p-4 flex items-start gap-3">
+          <CheckCircle2 className="h-5 w-5 text-[#3d8b40] flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-medium text-[#1e4620]">
+              문의가 성공적으로 접수되었습니다
+            </p>
+            <p className="text-xs text-[#3d8b40] mt-1">
+              빠른 시일 내에 연락드리겠습니다.
+            </p>
+          </div>
+        </div>
       )}
 
       {error && (
-        <Alert variant="destructive" className="mb-6">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
+        <div className="mb-6 bg-[#fbe4e4] border border-[#f5c6c6] rounded-lg p-4">
+          <p className="text-sm text-[#9b2c2c]">{error}</p>
+        </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="name">이름 *</Label>
-          <Input
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* 이름 */}
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-[#37352f] mb-2">
+            이름 <span className="text-[#eb5757]">*</span>
+          </label>
+          <input
             id="name"
+            type="text"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             required
             placeholder="홍길동"
+            className="w-full px-4 py-3 bg-white border border-[#e9e9e7] rounded-lg text-[#37352f] placeholder:text-[#c4c4c0] focus:outline-none focus:ring-2 focus:ring-[#2383e2] focus:border-transparent transition-all"
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="email">이메일 *</Label>
-          <Input
+        {/* 이메일 */}
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-[#37352f] mb-2">
+            이메일 <span className="text-[#eb5757]">*</span>
+          </label>
+          <input
             id="email"
             type="email"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
             placeholder="example@email.com"
+            className="w-full px-4 py-3 bg-white border border-[#e9e9e7] rounded-lg text-[#37352f] placeholder:text-[#c4c4c0] focus:outline-none focus:ring-2 focus:ring-[#2383e2] focus:border-transparent transition-all"
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="phone">연락처 *</Label>
-          <Input
+        {/* 연락처 */}
+        <div>
+          <label htmlFor="phone" className="block text-sm font-medium text-[#37352f] mb-2">
+            연락처 <span className="text-[#eb5757]">*</span>
+          </label>
+          <input
             id="phone"
             type="tel"
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
             required
             placeholder="010-1234-5678"
+            className="w-full px-4 py-3 bg-white border border-[#e9e9e7] rounded-lg text-[#37352f] placeholder:text-[#c4c4c0] focus:outline-none focus:ring-2 focus:ring-[#2383e2] focus:border-transparent transition-all"
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="message">문의 내용 *</Label>
-          <Textarea
+        {/* 문의 내용 */}
+        <div>
+          <label htmlFor="message" className="block text-sm font-medium text-[#37352f] mb-2">
+            문의 내용 <span className="text-[#eb5757]">*</span>
+          </label>
+          <textarea
             id="message"
             value={formData.message}
             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
             required
-            placeholder="프로젝트에 대해 자세히 알려주세요. (위치, 규모, 예산, 일정 등)"
-            rows={6}
+            placeholder="프로젝트에 대해 자세히 알려주세요.&#10;(위치, 규모, 예산, 일정 등)"
+            rows={5}
+            className="w-full px-4 py-3 bg-white border border-[#e9e9e7] rounded-lg text-[#37352f] placeholder:text-[#c4c4c0] focus:outline-none focus:ring-2 focus:ring-[#2383e2] focus:border-transparent transition-all resize-none"
           />
         </div>
 
-        <Button type="submit" className="w-full" size="lg" disabled={loading}>
-          {loading ? '접수 중...' : '문의 접수'}
-        </Button>
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-[#2383e2] hover:bg-[#1a6fca] disabled:bg-[#c4c4c0] text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+        >
+          {loading ? (
+            <>
+              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              접수 중...
+            </>
+          ) : (
+            '문의 접수하기'
+          )}
+        </button>
 
-        <p className="text-xs text-muted-foreground text-center">
+        <p className="text-xs text-[#9b9a97] text-center">
           문의 접수 시 개인정보 수집 및 이용에 동의한 것으로 간주됩니다.
         </p>
       </form>

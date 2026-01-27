@@ -230,6 +230,7 @@ export function AdminDashboard({ projects, inquiries, onLogout }: AdminDashboard
         title: '',
         category: 'curtains',
         completion_date: new Date().toISOString().split('T')[0],
+        completion_year: new Date().getFullYear().toString(),
         image_url: '',
         description: '',
         location: '',

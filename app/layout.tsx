@@ -74,7 +74,11 @@ export const metadata: Metadata = {
   },
   generator: 'Next.js',
   icons: {
-    icon: '/favicon.ico',
+    icon: [
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+    ],
     apple: '/apple-icon.png',
   },
   applicationName: 'Seojeon Tech',
@@ -98,6 +102,7 @@ export default function RootLayout({
         <meta name="geo.placename" content="논산시, 충청남도" />
         <meta name="geo.position" content="36.1869;127.0987" />
         <meta name="ICBM" content="36.1869, 127.0987" />
+        <meta name="naver-site-verification" content="b85726438b390c8436eb9902634d6869c584a4c0" />
         <StructuredData />
         <OrganizationSchema />
       </head>

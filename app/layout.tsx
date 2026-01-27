@@ -19,8 +19,8 @@ const notoSerifKR = Noto_Serif_KR({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://seojeontec.com'),
-  title: '서전텍 | 프리미엄 쉐이드 솔루션 - 커튼, 블라인드, 어닝, 무대막',
-  description: '30년 전문성의 서전텍. 프리미엄 커튼·블라인드, 접이식·고정식 어닝, 전동 무대막, 폴딩도어 및 쉐이드 솔루션. 전국 300+ 공연장 시공 실적. 견적 문의: 010-5209-9292',
+  title: '서전텍코리아 | 프리미엄 쉐이드 솔루션 - 커튼, 블라인드, 어닝, 무대막',
+  description: '30년 전문성의 서전텍코리아. 프리미엄 커튼·블라인드, 접이식·고정식 어닝, 전동 무대막, 폴딩도어 및 쉐이드 솔루션. 전국 300+ 공연장 시공 실적. 견적 문의: 010-5209-9292',
   keywords: ['커튼', '블라인드', '어닝', '무대막', '폴딩도어', '쉐이드', '항균커튼', '전동어닝', '건축 창호'],
   authors: [{ name: 'Seojeon Tech' }],
   creator: 'Seojeon Tech',
@@ -34,22 +34,22 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'ko_KR',
     url: 'https://seojeontec.com',
-    title: '서전텍 | 프리미엄 쉐이드 솔루션',
+    title: '서전텍코리아 | 프리미엄 쉐이드 솔루션',
     description: '공간의 빛을 디자인하는 프리미엄 쉐이드 솔루션. 커튼, 블라인드, 어닝, 무대막 전문',
-    siteName: '서전텍',
+    siteName: '서전텍코리아',
     images: [
       {
         url: 'https://seojeontec.com/hero-main.jpg',
         width: 1200,
         height: 630,
-        alt: '서전텍 프리미엄 쉐이드 솔루션',
+        alt: '서전텍코리아 프리미엄 쉐이드 솔루션',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: '서전텍 | 프리미엄 쉐이드 솔루션',
-    description: '30년 전문성의 서전텍. 커튼, 블라인드, 어닝, 무대막, 폴딩도어 전문. 전국 300+ 시공 실적.',
+    title: '서전텍코리아 | 프리미엄 쉐이드 솔루션',
+    description: '30년 전문성의 서전텍코리아. 커튼, 블라인드, 어닝, 무대막, 폴딩도어 전문. 전국 300+ 시공 실적.',
     images: ['https://seojeontec.com/hero-main.jpg'],
   },
   verification: {

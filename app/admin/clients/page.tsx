@@ -50,30 +50,83 @@ export default function AdminClientsPage() {
   }
 
   async function uploadLogo(file: File): Promise<string | null> {
-    const fileExt = file.name.split('.').pop()
-    const fileName = `${Date.now()}.${fileExt}`
-    const filePath = `client-logos/${fileName}`
-
-    const { error: uploadError } = await supabase.storage
-      .from('client-logos')
-      .upload(filePath, file)
-
-    if (uploadError) {
-      console.error('Upload error:', uploadError)
-      return null
+    // 파일 크기 검증 (5MB 제한)
+    const maxSize = 5 * 1024 * 1024 // 5MB
+    if (file.size > maxSize) {
+      throw new Error('파일 크기는 5MB 이하여야 합니다.')
     }
 
-    const { data } = supabase.storage
-      .from('client-logos')
-      .getPublicUrl(filePath)
+    // 파일 타입 검증
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']
+    if (!allowedTypes.includes(file.type)) {
+      throw new Error('이미지 파일만 업로드 가능합니다. (JPG, PNG, GIF, WEBP, SVG)')
+    }
 
-    return data.publicUrl
+    const fileExt = file.name.split('.').pop()?.toLowerCase()
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+    const filePath = `client-logos/${fileName}`
+
+    try {
+      // 기존 파일이 있으면 덮어쓰기 방지
+      const { error: uploadError } = await supabase.storage
+        .from('client-logos')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        })
+
+      if (uploadError) {
+        // 버킷이 없는 경우를 위한 구체적인 에러 메시지
+        if (uploadError.message.includes('Bucket not found') || uploadError.message.includes('The resource was not found')) {
+          throw new Error('Storage 버킷이 존재하지 않습니다. Supabase 대시보드에서 "client-logos" 버킷을 생성해주세요.')
+        }
+        // 권한 오류
+        if (uploadError.message.includes('new row violates row-level security') || uploadError.message.includes('permission')) {
+          throw new Error('업로드 권한이 없습니다. Supabase Storage 정책을 확인해주세요.')
+        }
+        // 파일 크기 오류
+        if (uploadError.message.includes('Payload too large')) {
+          throw new Error('파일이 너무 큽니다. 5MB 이하의 파일을 업로드해주세요.')
+        }
+        throw new Error(`업로드 실패: ${uploadError.message}`)
+      }
+
+      const { data } = supabase.storage
+        .from('client-logos')
+        .getPublicUrl(filePath)
+
+      if (!data?.publicUrl) {
+        throw new Error('업로드된 파일의 URL을 가져올 수 없습니다.')
+      }
+
+      return data.publicUrl
+    } catch (err: any) {
+      console.error('Logo upload error:', err)
+      throw err
+    }
   }
 
   function handleLogoSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
 
+    // 파일 크기 검증 (5MB 제한)
+    const maxSize = 5 * 1024 * 1024 // 5MB
+    if (file.size > maxSize) {
+      setError('파일 크기는 5MB 이하여야 합니다.')
+      e.target.value = ''
+      return
+    }
+
+    // 파일 타입 검증
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']
+    if (!allowedTypes.includes(file.type)) {
+      setError('이미지 파일만 업로드 가능합니다. (JPG, PNG, GIF, WEBP, SVG)')
+      e.target.value = ''
+      return
+    }
+
+    setError('') // 검증 통과 시 에러 초기화
     setNewClientLogo(file)
     setNewClientLogoPreview(URL.createObjectURL(file))
   }
@@ -82,28 +135,59 @@ export default function AdminClientsPage() {
     const file = e.target.files?.[0]
     if (!file) return
 
+    // 파일 크기 검증 (5MB 제한)
+    const maxSize = 5 * 1024 * 1024 // 5MB
+    if (file.size > maxSize) {
+      setError('파일 크기는 5MB 이하여야 합니다.')
+      e.target.value = ''
+      return
+    }
+
+    // 파일 타입 검증
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']
+    if (!allowedTypes.includes(file.type)) {
+      setError('이미지 파일만 업로드 가능합니다. (JPG, PNG, GIF, WEBP, SVG)')
+      e.target.value = ''
+      return
+    }
+
     setIsLoading(true)
+    setError('')
+    
     try {
       const logoUrl = await uploadLogo(file)
-      if (!logoUrl) throw new Error('로고 업로드 실패')
+      if (!logoUrl) {
+        throw new Error('로고 업로드 실패: URL을 가져올 수 없습니다.')
+      }
 
       const { error } = await supabase
         .from('clients')
         .update({ logo_url: logoUrl })
         .eq('id', clientId)
 
-      if (error) throw error
+      if (error) {
+        throw new Error(`데이터베이스 업데이트 실패: ${error.message}`)
+      }
       
       await fetchClients()
+      
+      // 성공 메시지 (선택사항)
+      setError('')
     } catch (err: any) {
-      setError('로고 업로드에 실패했습니다: ' + err.message)
+      console.error('Logo upload error:', err)
+      setError(err.message || '로고 업로드에 실패했습니다.')
     } finally {
       setIsLoading(false)
+      // 파일 input 초기화
+      e.target.value = ''
     }
   }
 
   async function addClient() {
-    if (!newClientName.trim()) return
+    if (!newClientName.trim()) {
+      setError('고객사 이름을 입력해주세요.')
+      return
+    }
 
     setIsLoading(true)
     setError('')
@@ -112,6 +196,9 @@ export default function AdminClientsPage() {
       let logoUrl = null
       if (newClientLogo) {
         logoUrl = await uploadLogo(newClientLogo)
+        if (!logoUrl) {
+          throw new Error('로고 업로드에 실패했습니다.')
+        }
       }
 
       const maxOrder = clients.length > 0 ? Math.max(...clients.map(c => c.display_order)) : 0
@@ -125,14 +212,18 @@ export default function AdminClientsPage() {
           is_active: true
         })
 
-      if (error) throw error
+      if (error) {
+        throw new Error(`데이터베이스 저장 실패: ${error.message}`)
+      }
 
       setNewClientName('')
       setNewClientLogo(null)
       setNewClientLogoPreview('')
       await fetchClients()
+      setError('') // 성공 시 에러 메시지 초기화
     } catch (err: any) {
-      setError('고객사 추가에 실패했습니다: ' + err.message)
+      console.error('Add client error:', err)
+      setError(err.message || '고객사 추가에 실패했습니다.')
     } finally {
       setIsLoading(false)
     }

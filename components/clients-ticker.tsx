@@ -12,18 +12,28 @@ interface Client {
 
 export function ClientsTicker() {
   const [clients, setClients] = useState<Client[]>([])
+  const [imageErrors, setImageErrors] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     async function fetchClients() {
-      const supabase = createClient()
-      const { data } = await supabase
-        .from('clients')
-        .select('*')
-        .eq('is_active', true)
-        .order('display_order')
-      
-      if (data) {
-        setClients(data)
+      try {
+        const supabase = createClient()
+        const { data, error } = await supabase
+          .from('clients')
+          .select('*')
+          .eq('is_active', true)
+          .order('display_order')
+        
+        if (error) {
+          console.error('Failed to fetch clients:', error)
+          return
+        }
+        
+        if (data) {
+          setClients(data)
+        }
+      } catch (err) {
+        console.error('Error fetching clients:', err)
       }
     }
 
@@ -31,7 +41,11 @@ export function ClientsTicker() {
   }, [])
 
   // Duplicate the clients array to create seamless loop
-  const duplicatedClients = [...clients, ...clients]
+  const duplicatedClients = clients.length > 0 ? [...clients, ...clients] : []
+
+  if (clients.length === 0) {
+    return null // 고객사가 없으면 섹션을 표시하지 않음
+  }
 
   return (
     <section className="py-16 bg-primary overflow-hidden">
@@ -51,24 +65,33 @@ export function ClientsTicker() {
         
         {/* Scrolling content */}
         <div className="flex gap-12 animate-scroll">
-          {duplicatedClients.map((client, index) => (
-            <div
-              key={`${client.id}-${index}`}
-              className="flex-shrink-0 flex items-center justify-center"
-            >
-              {client.logo_url ? (
-                <img 
-                  src={client.logo_url} 
-                  alt={client.name}
-                  className="h-10 lg:h-12 w-auto object-contain brightness-0 invert opacity-90 hover:opacity-100 transition-opacity"
-                />
-              ) : (
-                <span className="text-primary-foreground/90 text-xl lg:text-2xl font-medium whitespace-nowrap">
-                  {client.name}
-                </span>
-              )}
-            </div>
-          ))}
+          {duplicatedClients.map((client, index) => {
+            const hasError = imageErrors.has(client.id)
+            const shouldShowImage = client.logo_url && !hasError
+            
+            return (
+              <div
+                key={`${client.id}-${index}`}
+                className="flex-shrink-0 flex items-center justify-center min-w-[120px]"
+              >
+                {shouldShowImage ? (
+                  <img 
+                    src={client.logo_url} 
+                    alt={client.name}
+                    className="h-10 lg:h-12 w-auto max-w-[200px] object-contain brightness-0 invert opacity-90 hover:opacity-100 transition-opacity"
+                    onError={() => {
+                      setImageErrors(prev => new Set(prev).add(client.id))
+                    }}
+                    loading="lazy"
+                  />
+                ) : (
+                  <span className="text-primary-foreground/90 text-sm lg:text-base font-medium whitespace-nowrap px-4">
+                    {client.name}
+                  </span>
+                )}
+              </div>
+            )
+          })}
         </div>
       </div>
 

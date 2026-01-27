@@ -3,6 +3,9 @@ import { Footer } from '@/components/footer'
 import { GalleryGrid } from '@/components/gallery-grid'
 import { createClient } from '@/lib/supabase/server'
 
+// Supabase 서버 클라이언트가 cookies를 사용하므로 동적 렌더링 필요
+export const dynamic = 'force-dynamic'
+
 export default async function GalleryPage() {
   let projects = []
   

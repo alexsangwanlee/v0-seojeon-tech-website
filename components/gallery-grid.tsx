@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -15,7 +16,15 @@ interface Project {
 }
 
 export function GalleryGrid({ projects }: { projects: Project[] }) {
-  const [selectedCategory, setSelectedCategory] = useState('all')
+  const searchParams = useSearchParams()
+  const initialCategory = searchParams.get('category') || 'all'
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory)
+
+  // URL 파라미터 변경 시 카테고리 업데이트
+  useEffect(() => {
+    const category = searchParams.get('category') || 'all'
+    setSelectedCategory(category)
+  }, [searchParams])
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [currentProject, setCurrentProject] = useState<Project | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -60,89 +69,130 @@ export function GalleryGrid({ projects }: { projects: Project[] }) {
 
   return (
     <>
-      <section className="py-16">
-        <div className="container mx-auto px-4">
+      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-b from-muted/10 to-background">
+        <div className="container mx-auto px-4 lg:px-8">
           {/* Category Filter */}
-          <div className="flex flex-wrap gap-3 justify-center mb-12">
+          <div className="flex flex-wrap gap-2 sm:gap-3 justify-center mb-10 sm:mb-12 lg:mb-16">
             {categories.map((category) => (
               <Button
                 key={category}
                 variant={selectedCategory === category ? 'default' : 'outline'}
                 onClick={() => setSelectedCategory(category)}
-                className="px-6"
+                className={`px-4 sm:px-6 py-2 sm:py-2.5 text-sm sm:text-base font-medium transition-all duration-300 touch-manipulation ${
+                  selectedCategory === category 
+                    ? 'shadow-lg scale-105' 
+                    : 'hover:scale-105 hover:shadow-md'
+                }`}
               >
                 {categoryLabels[category]}
               </Button>
             ))}
           </div>
 
-          {/* Masonry Grid */}
+          {/* Gallery Grid */}
           {filteredProjects.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProjects.map((project) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+              {filteredProjects.map((project, index) => (
                 <div
                   key={project.id}
-                  className="group relative overflow-hidden bg-card border hover:shadow-2xl transition-all duration-500 cursor-pointer hover:-translate-y-1"
+                  className="group relative overflow-hidden rounded-lg bg-card border border-border hover:border-primary/50 hover:shadow-2xl transition-all duration-500 cursor-pointer hover:-translate-y-2"
                   onClick={() => openLightbox(project)}
+                  style={{
+                    animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`
+                  }}
                 >
                   {/* Project Image */}
-                  <div className="aspect-[4/3] overflow-hidden">
+                  <div className="aspect-[4/3] overflow-hidden relative">
                     <img 
                       src={project.image_url || '/placeholder.svg'} 
                       alt={project.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
+                    {/* Subtle gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300" />
                   </div>
                   
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                    <h3 className="text-background font-bold text-lg mb-2">{project.title}</h3>
-                    <p className="text-background/80 text-sm">
-                      {categoryLabels[project.category]} • {new Date(project.project_date).getFullYear()}
-                    </p>
+                  {/* Info Card - Always visible at bottom */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 bg-gradient-to-t from-black/90 via-black/80 to-transparent transform translate-y-0 group-hover:translate-y-0 transition-transform duration-300">
+                    <h3 className="text-white font-bold text-base sm:text-lg mb-1.5 sm:mb-2 line-clamp-2">{project.title}</h3>
+                    <div className="flex items-center gap-2 text-white/70 text-xs sm:text-sm">
+                      <span className="px-2 py-0.5 bg-primary/80 text-white rounded text-xs font-medium">
+                        {categoryLabels[project.category]}
+                      </span>
+                      <span>•</span>
+                      <span>{new Date(project.project_date).getFullYear()}년</span>
+                    </div>
+                  </div>
+
+                  {/* Hover effect - Click to view */}
+                  <div className="absolute inset-0 flex items-center justify-center bg-primary/0 group-hover:bg-primary/20 transition-colors duration-300 opacity-0 group-hover:opacity-100">
+                    <div className="text-white text-sm sm:text-base font-medium bg-background/90 text-foreground px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                      자세히 보기
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
             <div className="text-center py-20">
-              <p className="text-muted-foreground text-lg">아직 등록된 프로젝트가 없습니다.</p>
+              <p className="text-muted-foreground text-base sm:text-lg">선택한 카테고리에 프로젝트가 없습니다.</p>
             </div>
           )}
         </div>
       </section>
 
+      <style jsx global>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
+
       {/* Lightbox Modal */}
       {lightboxOpen && currentProject && (
-        <div className="fixed inset-0 bg-foreground/98 z-50 flex items-center justify-center p-4" onClick={closeLightbox}>
+        <div 
+          className="fixed inset-0 bg-black/95 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 animate-in fade-in duration-300" 
+          onClick={closeLightbox}
+        >
           {/* Close Button */}
           <button
             onClick={closeLightbox}
-            className="absolute top-6 right-6 text-background hover:text-background/70 transition-colors z-10"
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 text-white hover:text-white/70 transition-colors z-10 p-2 bg-black/50 rounded-full hover:bg-black/70 touch-manipulation"
             aria-label="Close lightbox"
           >
-            <X size={32} strokeWidth={1.5} />
+            <X size={24} className="sm:w-8 sm:h-8" strokeWidth={1.5} />
           </button>
 
           {/* Content */}
-          <div className="max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
+          <div className="max-w-6xl w-full" onClick={(e) => e.stopPropagation()}>
             {/* Image */}
-            <div className="overflow-hidden mb-8">
+            <div className="overflow-hidden mb-6 sm:mb-8 rounded-lg shadow-2xl">
               <img 
                 src={currentProject.image_url || '/placeholder.svg'} 
                 alt={currentProject.title}
-                className="w-full max-h-[70vh] object-contain"
+                className="w-full max-h-[60vh] sm:max-h-[70vh] object-contain bg-black/20"
               />
             </div>
 
             {/* Project Info */}
-            <div className="bg-background p-8">
-              <div className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-3">
-                {categoryLabels[currentProject.category]} • {new Date(currentProject.project_date).getFullYear()}
+            <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 lg:p-10 rounded-lg shadow-xl">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="px-3 py-1 bg-primary text-primary-foreground rounded-full text-xs sm:text-sm font-medium">
+                  {categoryLabels[currentProject.category]}
+                </span>
+                <span className="text-xs sm:text-sm text-muted-foreground">
+                  {new Date(currentProject.project_date).getFullYear()}년
+                </span>
               </div>
-              <h2 className="font-serif text-3xl font-bold mb-4">{currentProject.title}</h2>
+              <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6">{currentProject.title}</h2>
               {currentProject.description && (
-                <p className="text-muted-foreground leading-relaxed text-pretty">
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed text-pretty">
                   {currentProject.description}
                 </p>
               )}

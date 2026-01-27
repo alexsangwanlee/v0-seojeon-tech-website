@@ -24,12 +24,25 @@ export default function AdminLoginPage() {
 
     // 임시 로그인 (Supabase 연결 전까지)
     // 실제 운영시에는 Supabase 인증으로 변경 필요
-    if (email === 'admin@seojeontech.com' && password === 'admin123') {
-      localStorage.setItem('isAdmin', 'true')
-      router.push('/admin/dashboard')
-    } else {
-      setError('이메일 또는 비밀번호가 올바르지 않습니다.')
+    
+    // 등록된 관리자 계정 목록
+    const validAdmin = { email: 'admin@seojeontech.com', password: 'admin123' }
+    
+    if (email !== validAdmin.email) {
+      setError('존재하지 않는 이메일입니다.')
+      setLoading(false)
+      return
     }
+    
+    if (password !== validAdmin.password) {
+      setError('비밀번호가 올바르지 않습니다.')
+      setLoading(false)
+      return
+    }
+    
+    // 로그인 성공
+    localStorage.setItem('isAdmin', 'true')
+    router.push('/admin/dashboard')
     setLoading(false)
   }
 

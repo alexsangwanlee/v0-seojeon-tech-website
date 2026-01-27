@@ -277,12 +277,6 @@ export default function StagePage() {
           </div>
         </section>
 
-        <section className="py-24 lg:py-32 bg-muted/10">
-          <div className="container mx-auto px-4 lg:px-8">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-16 text-center text-balance">주요 시공 실적</h2>
-          </div>
-        </section>
-
         <StageProjectsTicker />
 
         {/* Gallery CTA Section */}

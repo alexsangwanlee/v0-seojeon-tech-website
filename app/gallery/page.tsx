@@ -27,14 +27,16 @@ export default async function GalleryPage() {
     <div className="min-h-screen bg-background">
       <Header />
       <main>
-        <section className="pt-32 pb-16 bg-muted/10">
+        <section className="pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 bg-muted/10">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="max-w-3xl">
-              <h1 className="font-serif text-5xl lg:text-6xl font-bold mb-6 text-balance">
-                프로젝트 포트폴리오
+              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-balance">
+                시공사례
               </h1>
-              <p className="text-lg text-muted-foreground font-light leading-relaxed">
+              <p className="text-base sm:text-lg text-muted-foreground font-light leading-relaxed">
                 전국 300여 곳 이상의 프로젝트를 성공적으로 완수했습니다.
+              </p>
+              <p className="text-base sm:text-lg text-muted-foreground font-light leading-relaxed mt-2">
                 서전텍의 기술력과 노하우를 확인하세요.
               </p>
             </div>

@@ -66,13 +66,13 @@ export function ContactForm() {
   return (
     <div>
       {success && (
-        <div className="mb-6 bg-[#dbeddb] border border-[#c3e6c3] rounded-lg p-4 flex items-start gap-3">
-          <CheckCircle2 className="h-5 w-5 text-[#3d8b40] flex-shrink-0 mt-0.5" />
+        <div className="mb-6 bg-green-50 border border-green-200 p-4 flex items-start gap-3">
+          <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-medium text-[#1e4620]">
+            <p className="text-sm font-medium text-green-800">
               문의가 성공적으로 접수되었습니다
             </p>
-            <p className="text-xs text-[#3d8b40] mt-1">
+            <p className="text-xs text-green-600 mt-1">
               빠른 시일 내에 연락드리겠습니다.
             </p>
           </div>
@@ -80,16 +80,16 @@ export function ContactForm() {
       )}
 
       {error && (
-        <div className="mb-6 bg-[#fbe4e4] border border-[#f5c6c6] rounded-lg p-4">
-          <p className="text-sm text-[#9b2c2c]">{error}</p>
+        <div className="mb-6 bg-red-50 border border-red-200 p-4">
+          <p className="text-sm text-red-700">{error}</p>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-6">
         {/* 이름 */}
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-[#37352f] mb-2">
-            이름 <span className="text-[#eb5757]">*</span>
+          <label htmlFor="name" className="block text-sm font-medium mb-2">
+            이름 <span className="text-destructive">*</span>
           </label>
           <input
             id="name"
@@ -98,14 +98,14 @@ export function ContactForm() {
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             required
             placeholder="홍길동"
-            className="w-full px-4 py-3 bg-white border border-[#e9e9e7] rounded-lg text-[#37352f] placeholder:text-[#c4c4c0] focus:outline-none focus:ring-2 focus:ring-[#2383e2] focus:border-transparent transition-all"
+            className="w-full px-4 py-3 bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
           />
         </div>
 
         {/* 이메일 */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-[#37352f] mb-2">
-            이메일 <span className="text-[#eb5757]">*</span>
+          <label htmlFor="email" className="block text-sm font-medium mb-2">
+            이메일 <span className="text-destructive">*</span>
           </label>
           <input
             id="email"
@@ -114,14 +114,14 @@ export function ContactForm() {
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
             placeholder="example@email.com"
-            className="w-full px-4 py-3 bg-white border border-[#e9e9e7] rounded-lg text-[#37352f] placeholder:text-[#c4c4c0] focus:outline-none focus:ring-2 focus:ring-[#2383e2] focus:border-transparent transition-all"
+            className="w-full px-4 py-3 bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
           />
         </div>
 
         {/* 연락처 */}
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-[#37352f] mb-2">
-            연락처 <span className="text-[#eb5757]">*</span>
+          <label htmlFor="phone" className="block text-sm font-medium mb-2">
+            연락처 <span className="text-destructive">*</span>
           </label>
           <input
             id="phone"
@@ -130,23 +130,23 @@ export function ContactForm() {
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
             required
             placeholder="010-1234-5678"
-            className="w-full px-4 py-3 bg-white border border-[#e9e9e7] rounded-lg text-[#37352f] placeholder:text-[#c4c4c0] focus:outline-none focus:ring-2 focus:ring-[#2383e2] focus:border-transparent transition-all"
+            className="w-full px-4 py-3 bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
           />
         </div>
 
         {/* 문의 내용 */}
         <div>
-          <label htmlFor="message" className="block text-sm font-medium text-[#37352f] mb-2">
-            문의 내용 <span className="text-[#eb5757]">*</span>
+          <label htmlFor="message" className="block text-sm font-medium mb-2">
+            문의 내용 <span className="text-destructive">*</span>
           </label>
           <textarea
             id="message"
             value={formData.message}
             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
             required
-            placeholder="프로젝트에 대해 자세히 알려주세요.&#10;(위치, 규모, 예산, 일정 등)"
-            rows={5}
-            className="w-full px-4 py-3 bg-white border border-[#e9e9e7] rounded-lg text-[#37352f] placeholder:text-[#c4c4c0] focus:outline-none focus:ring-2 focus:ring-[#2383e2] focus:border-transparent transition-all resize-none"
+            placeholder="프로젝트에 대해 자세히 알려주세요. (위치, 규모, 예산, 일정 등)"
+            rows={6}
+            className="w-full px-4 py-3 bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
           />
         </div>
 
@@ -154,7 +154,7 @@ export function ContactForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[#2383e2] hover:bg-[#1a6fca] disabled:bg-[#c4c4c0] text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+          className="w-full bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground text-primary-foreground font-medium py-3 px-6 transition-colors flex items-center justify-center gap-2"
         >
           {loading ? (
             <>
@@ -165,11 +165,11 @@ export function ContactForm() {
               접수 중...
             </>
           ) : (
-            '문의 접수하기'
+            '문의 접수'
           )}
         </button>
 
-        <p className="text-xs text-[#9b9a97] text-center">
+        <p className="text-xs text-muted-foreground text-center">
           문의 접수 시 개인정보 수집 및 이용에 동의한 것으로 간주됩니다.
         </p>
       </form>

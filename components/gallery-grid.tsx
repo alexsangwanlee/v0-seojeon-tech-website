@@ -156,7 +156,7 @@ export function GalleryGrid({ projects }: { projects: Project[] }) {
                         {categoryLabels[project.category]}
                       </span>
                       <span>•</span>
-                      <span>{project.completion_date ? new Date(project.completion_date).getFullYear() : '날짜 없음'}년</span>
+                      <span>{project.completion_date ? new Date(project.completion_date).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }) : '날짜 없음'}</span>
                     </div>
                   </div>
 
@@ -250,7 +250,7 @@ export function GalleryGrid({ projects }: { projects: Project[] }) {
                   {categoryLabels[currentProject.category]}
                 </span>
                 <span className="text-xs sm:text-sm text-muted-foreground">
-                  {currentProject.completion_date ? new Date(currentProject.completion_date).getFullYear() : '날짜 없음'}년
+                  {currentProject.completion_date ? new Date(currentProject.completion_date).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }) : '날짜 없음'}
                 </span>
               </div>
               <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6">{currentProject.title}</h2>

@@ -59,7 +59,7 @@ export const metadata: Metadata = {
       'max-video-preview': -1,
     },
   },
-  generator: 'v0.app',
+  generator: 'Next.js',
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-icon.png',

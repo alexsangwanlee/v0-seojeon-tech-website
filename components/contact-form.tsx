@@ -31,11 +31,28 @@ export function ContactForm() {
     setSuccess(false)
 
     try {
-      const { error } = await supabase
+      // 1. Supabase에 저장
+      const { error: dbError } = await supabase
         .from('inquiries')
         .insert([formData])
 
-      if (error) throw error
+      if (dbError) {
+        console.error('DB Error:', dbError)
+        // DB 저장 실패해도 이메일은 발송 시도
+      }
+
+      // 2. 이메일 발송
+      const emailRes = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+
+      const emailData = await emailRes.json()
+
+      if (!emailRes.ok) {
+        throw new Error(emailData.error || '이메일 발송에 실패했습니다.')
+      }
 
       setSuccess(true)
       setFormData({

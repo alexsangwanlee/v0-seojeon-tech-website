@@ -42,7 +42,7 @@ export function StageProjectsTicker() {
           주요 시공 실적
         </h3>
         <p className="text-muted-foreground">
-          전국 300여 곳 이상의 공연장과 문화시설
+          전국 주요 공연장과 문화시설
         </p>
       </div>
 

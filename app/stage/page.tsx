@@ -38,7 +38,7 @@ export default function StagePage() {
     {
       icon: Award,
       title: '대형 시설 실적',
-      description: '전국 문예회관, 대학 강당 등 300여 곳 시공 경험'
+      description: '전국 문예회관, 대학 강당 등 다수의 시공 경험'
     }
   ]
 

@@ -49,7 +49,7 @@ export default function StagePage() {
         <ProductHero
           title="전동 무대막"
           subtitle="공연 예술을 완성하는 프리미엄 시스템"
-          description="극장, 강당, 공연장을 위한 최고급 전동 무대막. 프리미엄 모터 시스템과 고급 벨벳의 완벽한 조화."
+          description={<>극장, 강당, 공연장을 위한 최고급 전동 무대막.<br />프리미엄 모터 시스템과 고급 벨벳의 완벽한 조화.</>}
           imagePrompt="Luxurious theater stage with elegant red velvet curtains, professional lighting, grand opera house interior"
         />
         
@@ -274,12 +274,6 @@ export default function StagePage() {
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-
-        <section className="py-24 lg:py-32 bg-muted/10">
-          <div className="container mx-auto px-4 lg:px-8">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-16 text-center text-balance">주요 시공 실적</h2>
           </div>
         </section>
 

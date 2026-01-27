@@ -45,6 +45,21 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: '서전텍 | 프리미엄 쉐이드 솔루션',
+    description: '30년 전문성의 서전텍. 커튼, 블라인드, 어닝, 무대막, 폴딩도어 전문. 전국 300+ 시공 실적.',
+    images: ['/hero-main.jpg'],
+    creator: '@seojeontech',
+  },
+  verification: {
+    google: 'google-site-verification-code',
+    other: {
+      'naver-site-verification': 'naver-site-verification-code',
+    },
+  },
+  category: 'business',
+  classification: '인테리어, 건축자재, 쉐이드솔루션',
   robots: {
     index: true,
     follow: true,

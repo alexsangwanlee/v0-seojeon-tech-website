@@ -1,12 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  // Vercel 배포 시 이미지 최적화 활성화
   images: {
-    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.supabase.co',
+      },
+    ],
   },
- 
 }
 
 export default nextConfig

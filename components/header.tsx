@@ -32,13 +32,13 @@ export function Header() {
     <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${
       isScrolled ? 'bg-background/95 backdrop-blur shadow-md border-b' : 'bg-background/80 backdrop-blur-sm'
     }`}>
-      <div className="container mx-auto flex h-20 items-center justify-between px-4 lg:px-8">
+      <div className="container mx-auto flex h-16 sm:h-20 items-center justify-between px-4 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <img 
             src="/logo.png" 
-            alt="SEOJEONTECH" 
-            className="h-12 w-auto"
+            alt="서전텍 - 프리미엄 쉐이드 솔루션" 
+            className="h-8 sm:h-10 md:h-12 w-auto"
           />
         </Link>
 
@@ -67,7 +67,7 @@ export function Header() {
         {/* Mobile Menu Button */}
         <button
           type="button"
-          className="md:hidden"
+          className="md:hidden p-2 -mr-2 touch-manipulation"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
         >
@@ -78,18 +78,18 @@ export function Header() {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="border-t bg-background md:hidden">
-          <nav className="container mx-auto flex flex-col gap-4 px-4 py-6">
+          <nav className="container mx-auto flex flex-col gap-2 px-4 py-4">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium text-foreground"
+                className="text-base font-medium text-foreground py-3 px-2 hover:bg-muted rounded-md transition-colors touch-manipulation"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {item.label}
               </Link>
             ))}
-            <Button asChild className="w-full">
+            <Button asChild className="w-full mt-2 touch-manipulation">
               <a href="https://blog.naver.com/seojeontech" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>
                 블로그
               </a>

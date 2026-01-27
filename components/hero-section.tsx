@@ -34,7 +34,7 @@ export function HeroSection() {
             <div className="inline-block px-4 py-2 mb-8 bg-primary/20 backdrop-blur-sm border border-background/30 text-xs tracking-[0.3em] uppercase text-background font-medium">
               Premium Shade Solutions
             </div>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 text-balance leading-[1.05] text-background">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-6 sm:mb-8 text-balance leading-tight sm:leading-[1.05] text-background">
               공간의 빛을 디자인하는
               <br />
               <span className="text-primary-foreground">프리미엄 쉐이드 솔루션</span>
@@ -42,19 +42,19 @@ export function HeroSection() {
           </div>
           
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
-            <p className="text-lg md:text-xl text-background/90 mb-4 max-w-3xl leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-background/90 mb-3 sm:mb-4 max-w-3xl leading-relaxed">
               30년 전통의 서전텍은 전동 어닝, 전동 무대막, 프리미엄 커튼 & 블라인드로
             </p>
-            <p className="text-lg md:text-xl text-background mb-16 max-w-3xl leading-relaxed font-medium">
+            <p className="text-base sm:text-lg md:text-xl text-background mb-10 sm:mb-12 md:mb-16 max-w-3xl leading-relaxed font-medium">
               상업 공간, 공연장, 의료 시설에 최적의 빛 환경을 제공합니다.
             </p>
           </div>
 
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300 flex flex-col sm:flex-row gap-6">
-            <Button size="lg" className="text-base px-10 py-7 bg-background text-foreground hover:bg-background/90" asChild>
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300 flex flex-col sm:flex-row gap-4 sm:gap-6">
+            <Button size="lg" className="text-sm sm:text-base px-8 sm:px-10 py-5 sm:py-7 bg-background text-foreground hover:bg-background/90" asChild>
               <Link href="/contact">프로젝트 시작하기</Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-base px-10 py-7 bg-transparent border-background text-background hover:bg-background/10" asChild>
+            <Button size="lg" variant="outline" className="text-sm sm:text-base px-8 sm:px-10 py-5 sm:py-7 bg-transparent border-background text-background hover:bg-background/10" asChild>
               <Link href="/gallery">포트폴리오 보기</Link>
             </Button>
           </div>

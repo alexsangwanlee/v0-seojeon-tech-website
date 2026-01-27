@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 interface Client {
   id: number
   name: string
+  logo_url?: string
   display_order: number
 }
 
@@ -53,9 +54,19 @@ export function ClientsTicker() {
           {duplicatedClients.map((client, index) => (
             <div
               key={`${client.id}-${index}`}
-              className="flex-shrink-0 text-primary-foreground/90 text-xl lg:text-2xl font-medium whitespace-nowrap"
+              className="flex-shrink-0 flex items-center justify-center"
             >
-              {client.name}
+              {client.logo_url ? (
+                <img 
+                  src={client.logo_url} 
+                  alt={client.name}
+                  className="h-10 lg:h-12 w-auto object-contain brightness-0 invert opacity-90 hover:opacity-100 transition-opacity"
+                />
+              ) : (
+                <span className="text-primary-foreground/90 text-xl lg:text-2xl font-medium whitespace-nowrap">
+                  {client.name}
+                </span>
+              )}
             </div>
           ))}
         </div>

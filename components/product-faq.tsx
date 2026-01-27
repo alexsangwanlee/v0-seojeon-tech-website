@@ -18,9 +18,34 @@ interface ProductFAQProps {
   faqs: FAQ[]
 }
 
+// FAQPage 스키마 (AEO 최적화)
+function FAQPageSchema({ faqs }: { faqs: FAQ[] }) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    'mainEntity': faqs.map((faq) => ({
+      '@type': 'Question',
+      'name': faq.question,
+      'acceptedAnswer': {
+        '@type': 'Answer',
+        'text': faq.answer
+      }
+    }))
+  }
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  )
+}
+
 export function ProductFAQ({ faqs }: ProductFAQProps) {
   return (
-    <section className="py-20 bg-muted/30">
+    <>
+      <FAQPageSchema faqs={faqs} />
+      <section className="py-20 bg-muted/30">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">자주 묻는 질문</h2>
@@ -30,7 +55,7 @@ export function ProductFAQ({ faqs }: ProductFAQProps) {
               <AccordionItem 
                 key={index} 
                 value={`item-${index}`}
-                className="bg-card border rounded-lg px-6"
+                className="bg-card !border rounded-lg px-6 overflow-hidden"
               >
                 <AccordionTrigger className="text-left hover:no-underline hover:text-primary">
                   <span className="font-semibold">{faq.question}</span>
@@ -54,5 +79,6 @@ export function ProductFAQ({ faqs }: ProductFAQProps) {
         </div>
       </div>
     </section>
+    </>
   )
 }

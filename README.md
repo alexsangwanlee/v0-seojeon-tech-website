@@ -1,30 +1,35 @@
-# Seojeon Tech website
+# 서전텍 (Seojeon Tech) 웹사이트
 
-*Automatically synced with your [v0.app](https://v0.app) deployments*
+프리미엄 쉐이드 솔루션 전문 기업 서전텍의 공식 웹사이트입니다.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/leesangwan722-7788s-projects/v0-seojeon-tech-website)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/qxVlsfOpwFj)
+## 주요 기능
 
-## Overview
+- **제품 소개**: 커튼, 블라인드, 어닝, 폴딩도어, 무대막
+- **시공 갤러리**: 실제 시공 사례 모음
+- **견적 문의**: 온라인 상담 신청
 
-This repository will stay in sync with your deployed chats on [v0.app](https://v0.app).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.app](https://v0.app).
+## 기술 스택
 
-## Deployment
+- **Framework**: Next.js 16
+- **Styling**: Tailwind CSS 4
+- **UI Components**: Radix UI
+- **Database**: Supabase
+- **Language**: TypeScript
 
-Your project is live at:
+## 시작하기
 
-**[https://vercel.com/leesangwan722-7788s-projects/v0-seojeon-tech-website](https://vercel.com/leesangwan722-7788s-projects/v0-seojeon-tech-website)**
+```bash
+# 의존성 설치
+pnpm install
 
-## Build your app
+# 개발 서버 실행
+pnpm dev
 
-Continue building your app on:
+# 프로덕션 빌드
+pnpm build
+```
 
-**[https://v0.app/chat/qxVlsfOpwFj](https://v0.app/chat/qxVlsfOpwFj)**
+## 연락처
 
-## How It Works
-
-1. Create and modify your project using [v0.app](https://v0.app)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+- **전화**: 010-5209-9292
+- **이메일**: seojeontech@naver.com

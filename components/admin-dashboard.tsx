@@ -1,7 +1,6 @@
 'use client'
 
 import React from "react"
-
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -14,26 +13,28 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Plus, Trash2, Edit, LogOut, Upload, ImageIcon, Users } from 'lucide-react'
+import { Plus, Trash2, Edit, LogOut, ImageIcon, Users, Loader2 } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import Link from 'next/link'
 
 type Project = {
-  id: string
+  id: string | number
   title: string
   category: string
-  project_date: string
+  completion_date: string
   image_url: string
-  description: string | null
+  description?: string | null
+  location?: string
 }
 
 type Inquiry = {
-  id: string
+  id: string | number
   name: string
   email: string
   phone: string
   message: string
   created_at: string
+  status?: string
 }
 
 export function AdminDashboard({ projects, inquiries }: { projects: Project[], inquiries: Inquiry[] }) {
@@ -41,6 +42,7 @@ export function AdminDashboard({ projects, inquiries }: { projects: Project[], i
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingProject, setEditingProject] = useState<Project | null>(null)
   const [uploading, setUploading] = useState(false)
+  const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
   const supabase = createClient()
@@ -48,15 +50,15 @@ export function AdminDashboard({ projects, inquiries }: { projects: Project[], i
   const [formData, setFormData] = useState({
     title: '',
     category: 'curtains',
-    project_date: new Date().toISOString().split('T')[0],
+    completion_date: new Date().toISOString().split('T')[0],
     image_url: '',
     description: '',
+    location: '',
   })
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
+  const handleLogout = () => {
+    localStorage.removeItem('isAdmin')
     router.push('/admin/login')
-    router.refresh()
   }
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,22 +70,28 @@ export function AdminDashboard({ projects, inquiries }: { projects: Project[], i
 
     try {
       const fileExt = file.name.split('.').pop()
-      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`
+      const fileName = `${Date.now()}.${fileExt}`
       const filePath = `gallery/${fileName}`
 
       const { error: uploadError } = await supabase.storage
         .from('project-images')
         .upload(filePath, file)
 
-      if (uploadError) throw uploadError
-
-      const { data } = supabase.storage
-        .from('project-images')
-        .getPublicUrl(filePath)
-
-      setFormData({ ...formData, image_url: data.publicUrl })
+      if (uploadError) {
+        // Storage bucket이 없는 경우 로컬 미리보기 사용
+        const previewUrl = URL.createObjectURL(file)
+        setFormData({ ...formData, image_url: previewUrl })
+        console.warn('Storage upload failed, using local preview:', uploadError)
+      } else {
+        const { data } = supabase.storage
+          .from('project-images')
+          .getPublicUrl(filePath)
+        setFormData({ ...formData, image_url: data.publicUrl })
+      }
     } catch (err: any) {
-      setError(err.message || '이미지 업로드에 실패했습니다.')
+      // 오류 시 로컬 미리보기 사용
+      const previewUrl = URL.createObjectURL(file)
+      setFormData({ ...formData, image_url: previewUrl })
     } finally {
       setUploading(false)
     }
@@ -92,12 +100,20 @@ export function AdminDashboard({ projects, inquiries }: { projects: Project[], i
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    setSaving(true)
 
     try {
       if (editingProject) {
         const { error } = await supabase
           .from('gallery_projects')
-          .update(formData)
+          .update({
+            title: formData.title,
+            category: formData.category,
+            completion_date: formData.completion_date,
+            image_url: formData.image_url,
+            description: formData.description,
+            location: formData.location,
+          })
           .eq('id', editingProject.id)
 
         if (error) throw error
@@ -108,7 +124,14 @@ export function AdminDashboard({ projects, inquiries }: { projects: Project[], i
       } else {
         const { data, error } = await supabase
           .from('gallery_projects')
-          .insert([formData])
+          .insert([{
+            title: formData.title,
+            category: formData.category,
+            completion_date: formData.completion_date,
+            image_url: formData.image_url,
+            description: formData.description,
+            location: formData.location,
+          }])
           .select()
           .single()
 
@@ -122,17 +145,19 @@ export function AdminDashboard({ projects, inquiries }: { projects: Project[], i
       setFormData({
         title: '',
         category: 'curtains',
-        project_date: new Date().toISOString().split('T')[0],
+        completion_date: new Date().toISOString().split('T')[0],
         image_url: '',
         description: '',
+        location: '',
       })
-      router.refresh()
     } catch (err: any) {
-      setError(err.message || '저장에 실패했습니다.')
+      setError('저장에 실패했습니다: ' + err.message)
+    } finally {
+      setSaving(false)
     }
   }
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string | number) => {
     if (!confirm('정말 삭제하시겠습니까?')) return
 
     try {
@@ -144,9 +169,8 @@ export function AdminDashboard({ projects, inquiries }: { projects: Project[], i
       if (error) throw error
 
       setLocalProjects(localProjects.filter(p => p.id !== id))
-      router.refresh()
     } catch (err: any) {
-      setError(err.message || '삭제에 실패했습니다.')
+      setError('삭제에 실패했습니다: ' + err.message)
     }
   }
 
@@ -155,9 +179,10 @@ export function AdminDashboard({ projects, inquiries }: { projects: Project[], i
     setFormData({
       title: project.title,
       category: project.category,
-      project_date: project.project_date,
+      completion_date: project.completion_date,
       image_url: project.image_url,
       description: project.description || '',
+      location: project.location || '',
     })
     setIsDialogOpen(true)
   }
@@ -206,9 +231,10 @@ export function AdminDashboard({ projects, inquiries }: { projects: Project[], i
                     setFormData({
                       title: '',
                       category: 'curtains',
-                      project_date: new Date().toISOString().split('T')[0],
+                      completion_date: new Date().toISOString().split('T')[0],
                       image_url: '',
                       description: '',
+                      location: '',
                     })
                   }}>
                     <Plus className="w-4 h-4 mr-2" />
@@ -247,13 +273,23 @@ export function AdminDashboard({ projects, inquiries }: { projects: Project[], i
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="project_date">시공 날짜</Label>
+                      <Label htmlFor="completion_date">시공 완료일</Label>
                       <Input
-                        id="project_date"
+                        id="completion_date"
                         type="date"
-                        value={formData.project_date}
-                        onChange={(e) => setFormData({ ...formData, project_date: e.target.value })}
+                        value={formData.completion_date}
+                        onChange={(e) => setFormData({ ...formData, completion_date: e.target.value })}
                         required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="location">위치 (선택)</Label>
+                      <Input
+                        id="location"
+                        value={formData.location}
+                        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                        placeholder="예: 서울 강남구"
                       />
                     </div>
 
@@ -276,7 +312,7 @@ export function AdminDashboard({ projects, inquiries }: { projects: Project[], i
                       </div>
                       {uploading && <p className="text-sm text-muted-foreground">업로드 중...</p>}
                       {formData.image_url && (
-                        <ImageIcon src={formData.image_url || "/placeholder.svg"} alt="Preview" className="w-full h-48 object-cover rounded mt-2" />
+                        <img src={formData.image_url || "/placeholder.svg"} alt="Preview" className="w-full h-48 object-cover rounded mt-2" />
                       )}
                     </div>
 
@@ -295,8 +331,15 @@ export function AdminDashboard({ projects, inquiries }: { projects: Project[], i
                       <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                         취소
                       </Button>
-                      <Button type="submit" disabled={uploading || !formData.image_url}>
-                        {editingProject ? '수정' : '추가'}
+                      <Button type="submit" disabled={uploading || saving || !formData.image_url}>
+                        {saving ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            저장 중...
+                          </>
+                        ) : (
+                          editingProject ? '수정' : '추가'
+                        )}
                       </Button>
                     </div>
                   </form>
@@ -308,10 +351,10 @@ export function AdminDashboard({ projects, inquiries }: { projects: Project[], i
               {localProjects.map((project) => (
                 <Card key={project.id}>
                   <CardContent className="p-4">
-                    <ImageIcon src={project.image_url || "/placeholder.svg"} alt={project.title} className="w-full h-48 object-cover rounded mb-4" />
+                    <img src={project.image_url || "/placeholder.svg"} alt={project.title} className="w-full h-48 object-cover rounded mb-4" />
                     <h3 className="font-bold mb-2">{project.title}</h3>
                     <p className="text-sm text-muted-foreground mb-2">
-                      {project.category} | {project.project_date}
+                      {project.category} | {project.completion_date} {project.location && `| ${project.location}`}
                     </p>
                     <div className="flex gap-2">
                       <Button size="sm" variant="outline" onClick={() => openEditDialog(project)}>
@@ -325,6 +368,12 @@ export function AdminDashboard({ projects, inquiries }: { projects: Project[], i
                 </Card>
               ))}
             </div>
+
+            {localProjects.length === 0 && (
+              <div className="text-center py-12 text-muted-foreground">
+                등록된 시공사례가 없습니다. 새 프로젝트를 추가해주세요.
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="inquiries">
@@ -333,28 +382,34 @@ export function AdminDashboard({ projects, inquiries }: { projects: Project[], i
                 <CardTitle>최근 문의 내역</CardTitle>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>이름</TableHead>
-                      <TableHead>연락처</TableHead>
-                      <TableHead>이메일</TableHead>
-                      <TableHead>메시지</TableHead>
-                      <TableHead>날짜</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {inquiries.map((inquiry) => (
-                      <TableRow key={inquiry.id}>
-                        <TableCell>{inquiry.name}</TableCell>
-                        <TableCell>{inquiry.phone}</TableCell>
-                        <TableCell>{inquiry.email}</TableCell>
-                        <TableCell className="max-w-xs truncate">{inquiry.message}</TableCell>
-                        <TableCell>{new Date(inquiry.created_at).toLocaleDateString('ko-KR')}</TableCell>
+                {inquiries.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    아직 문의 내역이 없습니다.
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>이름</TableHead>
+                        <TableHead>연락처</TableHead>
+                        <TableHead>이메일</TableHead>
+                        <TableHead>메시지</TableHead>
+                        <TableHead>날짜</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {inquiries.map((inquiry) => (
+                        <TableRow key={inquiry.id}>
+                          <TableCell>{inquiry.name}</TableCell>
+                          <TableCell>{inquiry.phone}</TableCell>
+                          <TableCell>{inquiry.email}</TableCell>
+                          <TableCell className="max-w-xs truncate">{inquiry.message}</TableCell>
+                          <TableCell>{new Date(inquiry.created_at).toLocaleDateString('ko-KR')}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

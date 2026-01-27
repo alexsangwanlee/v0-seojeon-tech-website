@@ -70,7 +70,7 @@ export default function AwningsPage() {
         <ProductHero
           title="프리미엄 어닝"
           subtitle="공간을 확장하는 스마트한 선택"
-          description="카페, 레스토랑, 주거 공간의 외부 영역을 쾌적하고 스타일리시하게 만들어줍니다."
+          description={<>카페, 레스토랑, 주거 공간의 외부 영역을<br />쾌적하고 스타일리시하게 만들어줍니다.</>}
           imagePrompt="Modern outdoor cafe with elegant retractable awning, contemporary European style architecture"
         />
         

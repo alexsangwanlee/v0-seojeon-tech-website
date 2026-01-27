@@ -2,7 +2,7 @@ import React from "react"
 import type { Metadata } from 'next'
 import { Noto_Sans_KR, Noto_Serif_KR } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
-import { StructuredData } from '@/components/structured-data'
+import { StructuredData, OrganizationSchema } from '@/components/structured-data'
 import './globals.css'
 
 const notoSansKR = Noto_Sans_KR({ 
@@ -16,8 +16,6 @@ const notoSerifKR = Noto_Serif_KR({
   weight: ['400', '700'],
   variable: '--font-serif',
 });
-
-const prelude = { variable: '--font-prelude' }; // Declare the prelude variable
 
 export const metadata: Metadata = {
   title: '서전텍 | 프리미엄 쉐이드 솔루션 - 커튼, 블라인드, 어닝, 무대막',
@@ -47,6 +45,21 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: '서전텍 | 프리미엄 쉐이드 솔루션',
+    description: '30년 전문성의 서전텍. 커튼, 블라인드, 어닝, 무대막, 폴딩도어 전문. 전국 300+ 시공 실적.',
+    images: ['/hero-main.jpg'],
+    creator: '@seojeontech',
+  },
+  verification: {
+    google: 'google-site-verification-code',
+    other: {
+      'naver-site-verification': 'naver-site-verification-code',
+    },
+  },
+  category: 'business',
+  classification: '인테리어, 건축자재, 쉐이드솔루션',
   robots: {
     index: true,
     follow: true,
@@ -81,9 +94,12 @@ export default function RootLayout({
     <html lang="ko">
       <head>
         <meta name="format-detection" content="telephone=yes" />
-        <meta name="naver-site-verification" content="naver" />
-        <meta name="google-site-verification" content="google" />
+        <meta name="geo.region" content="KR-44" />
+        <meta name="geo.placename" content="논산시, 충청남도" />
+        <meta name="geo.position" content="36.1869;127.0987" />
+        <meta name="ICBM" content="36.1869, 127.0987" />
         <StructuredData />
+        <OrganizationSchema />
       </head>
       <body className={`${notoSansKR.variable} ${notoSerifKR.variable} font-sans antialiased`}>
         {children}

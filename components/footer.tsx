@@ -10,15 +10,15 @@ export function Footer() {
           {/* Company Info */}
           <div>
             <img 
-              src="/logo-symbol.png" 
-              alt="SEOJEONTECH" 
-              className="h-12 w-auto mb-4"
+              src="/logo.png" 
+              alt="서전텍 - 프리미엄 쉐이드 솔루션" 
+              className="h-12 w-auto mb-6 brightness-0 invert"
             />
-            <p className="text-slate-300 mb-4 text-pretty">
-              공간의 빛을 디자인하는 서전텍
-            </p>
             <p className="text-sm text-slate-400 text-pretty">
               프리미엄 쉐이드 솔루션 전문 기업
+            </p>
+            <p className="text-slate-300 mt-2 text-pretty">
+              공간의 빛을 디자인하는 서전텍
             </p>
           </div>
 

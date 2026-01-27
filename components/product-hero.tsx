@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react'
 interface ProductHeroProps {
   title: string
   subtitle: string
-  description: string
-  imagePrompt: string
+  description: React.ReactNode
+  imagePrompt?: string
 }
 
 export function ProductHero({ title, subtitle, description }: ProductHeroProps) {

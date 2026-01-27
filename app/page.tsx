@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import { Header } from '@/components/header'
 import { HeroSection } from '@/components/hero-section'
 import { CoreExpertise } from '@/components/core-expertise'
@@ -38,11 +39,13 @@ export default async function HomePage() {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
               <div className="group relative overflow-hidden border border-border hover:shadow-xl transition-all duration-500">
-                <div className="aspect-video overflow-hidden">
-                  <img 
+                <div className="aspect-video overflow-hidden relative">
+                  <Image 
                     src="/installations/auditorium-stage.jpg" 
-                    alt="대형 공연장 무대막 시공"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    alt="대형 공연장 무대막 시공 - 서전텍 전동 무대막 설치 사례"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
                 <div className="p-4 bg-card">
@@ -51,11 +54,13 @@ export default async function HomePage() {
               </div>
 
               <div className="group relative overflow-hidden border border-border hover:shadow-xl transition-all duration-500">
-                <div className="aspect-video overflow-hidden">
-                  <img 
+                <div className="aspect-video overflow-hidden relative">
+                  <Image 
                     src="/installations/hospital-curtains.jpg" 
-                    alt="병원 항균 커튼 설치"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    alt="병원 항균 커튼 설치 - 서전텍 Hygenica 항균 커튼"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
                 <div className="p-4 bg-card">
@@ -64,11 +69,13 @@ export default async function HomePage() {
               </div>
 
               <div className="group relative overflow-hidden border border-border hover:shadow-xl transition-all duration-500">
-                <div className="aspect-video overflow-hidden">
-                  <img 
+                <div className="aspect-video overflow-hidden relative">
+                  <Image 
                     src="/installations/residential-folding-doors.jpg" 
-                    alt="상업 공간 폴딩도어"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    alt="상업 공간 폴딩도어 - 서전텍 단열 폴딩도어 시공"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
                 <div className="p-4 bg-card">
@@ -77,11 +84,13 @@ export default async function HomePage() {
               </div>
 
               <div className="group relative overflow-hidden border border-border hover:shadow-xl transition-all duration-500">
-                <div className="aspect-video overflow-hidden">
-                  <img 
+                <div className="aspect-video overflow-hidden relative">
+                  <Image 
                     src="/installations/cafe-awning-detail.jpg" 
-                    alt="카페 테라스 어닝"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    alt="카페 테라스 어닝 - 서전텍 프리미엄 접이식 어닝"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
                 <div className="p-4 bg-card">
@@ -90,11 +99,13 @@ export default async function HomePage() {
               </div>
 
               <div className="group relative overflow-hidden border border-border hover:shadow-xl transition-all duration-500">
-                <div className="aspect-video overflow-hidden">
-                  <img 
+                <div className="aspect-video overflow-hidden relative">
+                  <Image 
                     src="/installations/blinds-installation.jpg" 
-                    alt="주거 공간 블라인드"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    alt="주거 공간 블라인드 - 서전텍 허니콤 블라인드 설치"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
                 <div className="p-4 bg-card">
@@ -103,11 +114,13 @@ export default async function HomePage() {
               </div>
 
               <div className="group relative overflow-hidden border border-border hover:shadow-xl transition-all duration-500">
-                <div className="aspect-video overflow-hidden">
-                  <img 
+                <div className="aspect-video overflow-hidden relative">
+                  <Image 
                     src="/installations/commercial-awning.jpg" 
-                    alt="상업 시설 어닝 시스템"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    alt="상업 시설 어닝 시스템 - 서전텍 고정식 캐노피 시공"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
                 <div className="p-4 bg-card">

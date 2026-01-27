@@ -4,12 +4,21 @@ import { GalleryGrid } from '@/components/gallery-grid'
 import { createClient } from '@/lib/supabase/server'
 
 export default async function GalleryPage() {
-  const supabase = await createClient()
+  let projects = []
   
-  const { data: projects } = await supabase
-    .from('gallery_projects')
-    .select('*')
-    .order('completion_date', { ascending: false })
+  try {
+    const supabase = await createClient()
+    const { data, error } = await supabase
+      .from('gallery_projects')
+      .select('*')
+      .order('completion_date', { ascending: false })
+    
+    if (!error && data) {
+      projects = data
+    }
+  } catch (err) {
+    console.error('Failed to fetch projects:', err)
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -29,7 +38,7 @@ export default async function GalleryPage() {
           </div>
         </section>
         
-        <GalleryGrid projects={projects || []} />
+        <GalleryGrid projects={projects} />
       </main>
       <Footer />
     </div>

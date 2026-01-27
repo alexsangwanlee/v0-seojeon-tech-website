@@ -48,7 +48,7 @@ export default function FoldingDoorsPage() {
         <ProductHero
           title="폴딩도어 시스템"
           subtitle="공간의 경계를 허무는 혁신적 개방감"
-          description="실내외를 자유롭게 연결하는 프리미엄 폴딩도어. 뛰어난 단열과 차음 성능으로 사계절 쾌적함을 선사합니다."
+          description={<>실내외를 자유롭게 연결하는 프리미엄 폴딩도어.<br />뛰어난 단열과 차음 성능으로 사계절 쾌적함을 선사합니다.</>}
           imagePrompt="Modern luxury home with large folding glass doors opening to patio, contemporary architecture, bright natural light"
         />
         

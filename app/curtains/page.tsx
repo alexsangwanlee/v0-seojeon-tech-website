@@ -113,7 +113,7 @@ export default function CurtainsPage() {
         <ProductHero
           title="커튼 & 블라인드"
           subtitle="공간의 품격을 높이는 맞춤형 창호 솔루션"
-          description="병원용 항균 커튼부터 고급 암막 커튼까지, 공간의 특성에 맞는 최적의 솔루션을 제공합니다."
+          description={<>병원용 항균 커튼부터 고급 암막 커튼까지,<br />공간의 특성에 맞는 최적의 솔루션을 제공합니다.</>}
           imagePrompt="Modern hospital room with elegant antibacterial curtains, clean and bright medical environment"
         />
         

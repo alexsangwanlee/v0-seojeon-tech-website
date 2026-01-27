@@ -37,7 +37,7 @@ export function Header() {
         <Link href="/" className="flex items-center">
           <img 
             src="/logo.png" 
-            alt="SEOJEONTECH" 
+            alt="서전텍 - 프리미엄 쉐이드 솔루션" 
             className="h-12 w-auto"
           />
         </Link>

@@ -24,7 +24,7 @@ type Project = {
   completion_date: string
   image_url: string
   description?: string | null
-  location?: string
+  location?: string | null
 }
 
 type DragState = {
@@ -188,7 +188,7 @@ export function AdminDashboard({ projects, inquiries, onLogout }: AdminDashboard
         throw new Error('프로젝트 이미지를 업로드해주세요.')
       }
 
-      const updateData = {
+      const updateData: Partial<Project> = {
         title: formData.title,
         category: formData.category,
         completion_date: completionDate,
@@ -208,7 +208,7 @@ export function AdminDashboard({ projects, inquiries, onLogout }: AdminDashboard
         }
 
         setLocalProjects(localProjects.map(p => 
-          p.id === editingProject.id ? { ...p, ...updateData } : p
+          p.id === editingProject.id ? { ...p, ...updateData } as Project : p
         ))
       } else {
         const { data, error } = await supabase

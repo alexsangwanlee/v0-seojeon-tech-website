@@ -67,6 +67,40 @@ export function GalleryGrid({ projects }: { projects: Project[] }) {
     }
   }
 
+  const prevProject = () => {
+    if (!currentProject) return
+    const currentIndex = filteredProjects.findIndex(p => p.id === currentProject.id)
+    if (currentIndex > 0) {
+      openLightbox(filteredProjects[currentIndex - 1])
+    }
+  }
+
+  const nextProject = () => {
+    if (!currentProject) return
+    const currentIndex = filteredProjects.findIndex(p => p.id === currentProject.id)
+    if (currentIndex < filteredProjects.length - 1) {
+      openLightbox(filteredProjects[currentIndex + 1])
+    }
+  }
+
+  // 키보드 네비게이션
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (!lightboxOpen) return
+      
+      if (e.key === 'Escape') {
+        closeLightbox()
+      } else if (e.key === 'ArrowLeft') {
+        prevProject()
+      } else if (e.key === 'ArrowRight') {
+        nextProject()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [lightboxOpen, currentProject, filteredProjects])
+
   return (
     <>
       <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-b from-muted/10 to-background">
@@ -124,12 +158,6 @@ export function GalleryGrid({ projects }: { projects: Project[] }) {
                     </div>
                   </div>
 
-                  {/* Hover effect - Click to view */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-primary/0 group-hover:bg-primary/20 transition-colors duration-300 opacity-0 group-hover:opacity-100">
-                    <div className="text-white text-sm sm:text-base font-medium bg-background/90 text-foreground px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
-                      자세히 보기
-                    </div>
-                  </div>
                 </div>
               ))}
             </div>
@@ -169,15 +197,48 @@ export function GalleryGrid({ projects }: { projects: Project[] }) {
             <X size={24} className="sm:w-8 sm:h-8" strokeWidth={1.5} />
           </button>
 
+          {/* Previous Project Button */}
+          {filteredProjects.findIndex(p => p.id === currentProject.id) > 0 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                prevProject()
+              }}
+              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 text-white hover:text-white/70 transition-all z-10 p-2 sm:p-3 bg-black/50 rounded-full hover:bg-black/70 hover:scale-110 touch-manipulation"
+              aria-label="Previous project"
+            >
+              <ChevronLeft size={28} className="sm:w-10 sm:h-10" strokeWidth={2} />
+            </button>
+          )}
+
+          {/* Next Project Button */}
+          {filteredProjects.findIndex(p => p.id === currentProject.id) < filteredProjects.length - 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                nextProject()
+              }}
+              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 text-white hover:text-white/70 transition-all z-10 p-2 sm:p-3 bg-black/50 rounded-full hover:bg-black/70 hover:scale-110 touch-manipulation"
+              aria-label="Next project"
+            >
+              <ChevronRight size={28} className="sm:w-10 sm:h-10" strokeWidth={2} />
+            </button>
+          )}
+
           {/* Content */}
           <div className="max-w-6xl w-full" onClick={(e) => e.stopPropagation()}>
             {/* Image */}
-            <div className="overflow-hidden mb-6 sm:mb-8 rounded-lg shadow-2xl">
+            <div className="overflow-hidden mb-6 sm:mb-8 rounded-lg shadow-2xl relative">
               <img 
                 src={currentProject.image_url || '/placeholder.svg'} 
                 alt={currentProject.title}
                 className="w-full max-h-[60vh] sm:max-h-[70vh] object-contain bg-black/20"
               />
+              
+              {/* Project counter */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-xs sm:text-sm">
+                {filteredProjects.findIndex(p => p.id === currentProject.id) + 1} / {filteredProjects.length}
+              </div>
             </div>
 
             {/* Project Info */}

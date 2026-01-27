@@ -76,6 +76,13 @@ export function AdminDashboard({ projects, inquiries, onLogout }: AdminDashboard
   }
 
   const processImageFile = async (file: File) => {
+    // 파일 크기 검증 (10MB 제한)
+    const maxSize = 10 * 1024 * 1024 // 10MB
+    if (file.size > maxSize) {
+      setError('파일 크기는 10MB 이하여야 합니다.')
+      return
+    }
+
     if (!file.type.startsWith('image/')) {
       setError('이미지 파일만 업로드 가능합니다.')
       return
@@ -85,27 +92,46 @@ export function AdminDashboard({ projects, inquiries, onLogout }: AdminDashboard
     setError('')
 
     try {
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${Date.now()}.${fileExt}`
+      const fileExt = file.name.split('.').pop()?.toLowerCase()
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
       const filePath = `gallery/${fileName}`
 
       const { error: uploadError } = await supabase.storage
         .from('project-images')
-        .upload(filePath, file)
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        })
 
       if (uploadError) {
-        const previewUrl = URL.createObjectURL(file)
-        setFormData({ ...formData, image_url: previewUrl })
-        console.warn('Storage upload failed, using local preview:', uploadError)
-      } else {
-        const { data } = supabase.storage
-          .from('project-images')
-          .getPublicUrl(filePath)
-        setFormData({ ...formData, image_url: data.publicUrl })
+        // 버킷이 없는 경우를 위한 구체적인 에러 메시지
+        if (uploadError.message.includes('Bucket not found') || uploadError.message.includes('The resource was not found')) {
+          throw new Error('Storage 버킷이 존재하지 않습니다. Supabase 대시보드에서 "project-images" 버킷을 생성해주세요.')
+        }
+        // 권한 오류
+        if (uploadError.message.includes('new row violates row-level security') || uploadError.message.includes('permission')) {
+          throw new Error('업로드 권한이 없습니다. Supabase Storage 정책을 확인해주세요.')
+        }
+        // 파일 크기 오류
+        if (uploadError.message.includes('Payload too large')) {
+          throw new Error('파일이 너무 큽니다. 10MB 이하의 파일을 업로드해주세요.')
+        }
+        throw new Error(`업로드 실패: ${uploadError.message}`)
       }
+
+      const { data } = supabase.storage
+        .from('project-images')
+        .getPublicUrl(filePath)
+
+      if (!data?.publicUrl) {
+        throw new Error('업로드된 파일의 URL을 가져올 수 없습니다.')
+      }
+
+      setFormData({ ...formData, image_url: data.publicUrl })
     } catch (err: any) {
-      const previewUrl = URL.createObjectURL(file)
-      setFormData({ ...formData, image_url: previewUrl })
+      console.error('Image upload error:', err)
+      setError(err.message || '이미지 업로드에 실패했습니다.')
+      // 에러 발생 시 미리보기는 표시하지 않음 (사용자가 재시도하도록)
     } finally {
       setUploading(false)
     }
@@ -143,39 +169,53 @@ export function AdminDashboard({ projects, inquiries, onLogout }: AdminDashboard
     setSaving(true)
 
     try {
+      // 날짜 유효성 검증
+      if (!formData.completion_date) {
+        throw new Error('시공 완료일을 입력해주세요.')
+      }
+
+      const dateObj = new Date(formData.completion_date)
+      if (isNaN(dateObj.getTime())) {
+        throw new Error('올바른 날짜 형식이 아닙니다.')
+      }
+
+      // 이미지 URL 검증
+      if (!formData.image_url) {
+        throw new Error('프로젝트 이미지를 업로드해주세요.')
+      }
+
+      const updateData = {
+        title: formData.title,
+        category: formData.category,
+        completion_date: formData.completion_date,
+        image_url: formData.image_url,
+        description: formData.description || null,
+        location: formData.location || null,
+      }
+
       if (editingProject) {
         const { error } = await supabase
           .from('gallery_projects')
-          .update({
-            title: formData.title,
-            category: formData.category,
-            completion_date: formData.completion_date,
-            image_url: formData.image_url,
-            description: formData.description,
-            location: formData.location,
-          })
+          .update(updateData)
           .eq('id', editingProject.id)
 
-        if (error) throw error
+        if (error) {
+          throw new Error(`데이터베이스 업데이트 실패: ${error.message}`)
+        }
 
         setLocalProjects(localProjects.map(p => 
-          p.id === editingProject.id ? { ...p, ...formData } : p
+          p.id === editingProject.id ? { ...p, ...updateData } : p
         ))
       } else {
         const { data, error } = await supabase
           .from('gallery_projects')
-          .insert([{
-            title: formData.title,
-            category: formData.category,
-            completion_date: formData.completion_date,
-            image_url: formData.image_url,
-            description: formData.description,
-            location: formData.location,
-          }])
+          .insert([updateData])
           .select()
           .single()
 
-        if (error) throw error
+        if (error) {
+          throw new Error(`데이터베이스 저장 실패: ${error.message}`)
+        }
 
         setLocalProjects([data, ...localProjects])
       }
@@ -216,10 +256,26 @@ export function AdminDashboard({ projects, inquiries, onLogout }: AdminDashboard
 
   const openEditDialog = (project: Project) => {
     setEditingProject(project)
+    
+    // 날짜 형식 정규화 (YYYY-MM-DD)
+    let formattedDate = project.completion_date
+    if (formattedDate) {
+      try {
+        const dateObj = new Date(formattedDate)
+        if (!isNaN(dateObj.getTime())) {
+          formattedDate = dateObj.toISOString().split('T')[0]
+        }
+      } catch {
+        // 날짜 파싱 실패 시 원본 유지
+      }
+    } else {
+      formattedDate = new Date().toISOString().split('T')[0]
+    }
+    
     setFormData({
       title: project.title,
       category: project.category,
-      completion_date: project.completion_date,
+      completion_date: formattedDate,
       image_url: project.image_url,
       description: project.description || '',
       location: project.location || '',
@@ -473,7 +529,7 @@ export function AdminDashboard({ projects, inquiries, onLogout }: AdminDashboard
                           {project.category}
                         </span>
                         <span className="px-2 py-1 bg-muted rounded-full">
-                          {new Date(project.completion_date).toLocaleDateString('ko-KR')}
+                          {project.completion_date ? new Date(project.completion_date).toLocaleDateString('ko-KR') : '날짜 없음'}
                         </span>
                         {project.location && (
                           <span className="px-2 py-1 bg-muted rounded-full">

@@ -9,10 +9,12 @@ interface Project {
   id: string
   title: string
   category: string
-  project_date: string
+  completion_date: string
+  project_date?: string // 하위 호환성을 위해 유지
   image_url: string
   description: string | null
-  images: string[]
+  images?: string[]
+  location?: string
 }
 
 export function GalleryGrid({ projects }: { projects: Project[] }) {
@@ -154,7 +156,7 @@ export function GalleryGrid({ projects }: { projects: Project[] }) {
                         {categoryLabels[project.category]}
                       </span>
                       <span>•</span>
-                      <span>{new Date(project.project_date).getFullYear()}년</span>
+                      <span>{project.completion_date ? new Date(project.completion_date).getFullYear() : '날짜 없음'}년</span>
                     </div>
                   </div>
 
@@ -248,7 +250,7 @@ export function GalleryGrid({ projects }: { projects: Project[] }) {
                   {categoryLabels[currentProject.category]}
                 </span>
                 <span className="text-xs sm:text-sm text-muted-foreground">
-                  {new Date(currentProject.project_date).getFullYear()}년
+                  {currentProject.completion_date ? new Date(currentProject.completion_date).getFullYear() : '날짜 없음'}년
                 </span>
               </div>
               <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6">{currentProject.title}</h2>

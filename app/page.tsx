@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description: '30년 전문성의 서전텍. 프리미엄 커튼·블라인드, 접이식·고정식 어닝, 전동 무대막, 폴딩도어. 전국 300+ 공연장 시공 실적.',
   keywords: ['커튼', '블라인드', '어닝', '무대막', '폴딩도어', '쉐이드솔루션', '항균커튼', '전동어닝'],
   alternates: {
-    canonical: 'https://seojeontech.com',
+    canonical: 'https://seojeontec.com',
   },
 }
 
